@@ -12,17 +12,12 @@ const users_1 = __importDefault(require("./routes/users"));
 const books_1 = __importDefault(require("./routes/books"));
 require('dotenv').config({ path: require('find-config')('.env') });
 const app = (0, express_1.default)();
-app.use(cors_1.default);
+app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
-const allowedOrigins = ['http://localhost:5173'];
-const options = {
-    origin: allowedOrigins
-};
-app.use((0, cors_1.default)(options));
 const PORT = (_a = process.env.PORT) !== null && _a !== void 0 ? _a : 3000;
-app.get(['/', '/api', '/api/v1'], (_req, res) => {
+app.get(['/api', '/api/v1'], (_req, res) => {
     res.send('Radical API v1.0');
 });
 app.use('/api/v1/auth', auth_1.default);

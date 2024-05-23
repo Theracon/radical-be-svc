@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 const PORT = process.env.PORT ?? 3000
 
-app.get(['/', '/api', '/api/v1'], (_req, res) => {
+app.get(['/api', '/api/v1'], (_req, res) => {
   res.send('Radical API v1.0')
 })
 

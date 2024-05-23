@@ -36,7 +36,7 @@ const fetchBooksFromNytApi = (params) => __awaiter(void 0, void 0, void 0, funct
             let list = [...(response[0].data || {}).results, ...(response[1].data || {}).results].map((row) => ({
                 title: row === null || row === void 0 ? void 0 : row.title,
                 author: row === null || row === void 0 ? void 0 : row.author,
-                price: row === null || row === void 0 ? void 0 : row.price
+                price: String(parseInt(row === null || row === void 0 ? void 0 : row.price)) + ' GBP'
             }));
             list = (0, array_1.shuffle)(list);
             list = list.slice(0, 20);
@@ -54,7 +54,7 @@ const fetchBooksFromNytApi = (params) => __awaiter(void 0, void 0, void 0, funct
                 const list = ((data === null || data === void 0 ? void 0 : data.results) || []).map((row) => ({
                     title: row === null || row === void 0 ? void 0 : row.title,
                     author: row === null || row === void 0 ? void 0 : row.author,
-                    price: row === null || row === void 0 ? void 0 : row.price
+                    price: String(parseInt(((row === null || row === void 0 ? void 0 : row.price) || 0).toString())) + ' GBP'
                 }));
                 result = { books: list, total: list.length };
             }
