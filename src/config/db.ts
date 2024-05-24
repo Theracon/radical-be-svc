@@ -2,7 +2,7 @@ import { Sequelize } from 'sequelize'
 
 require('dotenv').config({ path: require('find-config')('.env') })
 
-const sequelize = new Sequelize(process.env.POSTGRES_URI!)
+const sequelize = new Sequelize(process.env.DATABASE_URL!)
 
 const connectToDatabase = async () => {
   try {

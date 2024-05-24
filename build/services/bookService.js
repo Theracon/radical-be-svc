@@ -16,6 +16,7 @@ const axios_1 = __importDefault(require("axios"));
 require('dotenv').config({ path: require('find-config')('.env') });
 const object_1 = require("../utils/object");
 const array_1 = require("../utils/array");
+const Book_1 = __importDefault(require("../models/Book"));
 const fetchBooksFromNytApi = (params) => __awaiter(void 0, void 0, void 0, function* () {
     let result = {};
     const nytApiBaseUrl = process.env.NYT_API_BASE_URL;
@@ -36,14 +37,14 @@ const fetchBooksFromNytApi = (params) => __awaiter(void 0, void 0, void 0, funct
             let list = [...(response[0].data || {}).results, ...(response[1].data || {}).results].map((row) => ({
                 title: row === null || row === void 0 ? void 0 : row.title,
                 author: row === null || row === void 0 ? void 0 : row.author,
-                price: String(parseInt(row === null || row === void 0 ? void 0 : row.price)) + ' GBP'
+                price: String(parseInt(row === null || row === void 0 ? void 0 : row.price))
             }));
             list = (0, array_1.shuffle)(list);
             list = list.slice(0, 20);
             result = { books: list, total: list.length };
         }
         catch (error) {
-            console.error(error);
+            throw error;
         }
     }
     else {
@@ -54,29 +55,76 @@ const fetchBooksFromNytApi = (params) => __awaiter(void 0, void 0, void 0, funct
                 const list = ((data === null || data === void 0 ? void 0 : data.results) || []).map((row) => ({
                     title: row === null || row === void 0 ? void 0 : row.title,
                     author: row === null || row === void 0 ? void 0 : row.author,
-                    price: String(parseInt(((row === null || row === void 0 ? void 0 : row.price) || 0).toString())) + ' GBP'
+                    price: String(parseInt(((row === null || row === void 0 ? void 0 : row.price) || 0).toString()))
                 }));
                 result = { books: list, total: list.length };
             }
         }
         catch (error) {
-            console.error(error);
+            throw error;
         }
     }
     return result;
 });
-const fetchFavouritesByUserId = () => {
-    return [];
-};
-const addNewFavourite = () => {
-    return true;
-};
-const updateFavourite = () => {
-    return true;
-};
-const deleteFavourite = () => {
-    return true;
-};
+const fetchFavouritesByUserId = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const favourites = yield Book_1.default.findAll({
+            limit: 20,
+            where: { userId },
+            order: [['updatedAt', 'DESC']]
+        });
+        return favourites;
+    }
+    catch (error) {
+        throw error;
+    }
+});
+const addNewFavourite = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield Book_1.default.create(data);
+        const favourites = yield Book_1.default.findAll({
+            limit: 20,
+            where: { userId: data.userId },
+            order: [['updatedAt', 'DESC']]
+        });
+        return favourites;
+    }
+    catch (error) {
+        throw error;
+    }
+});
+const updateFavourite = (userId, bookId, data) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield Book_1.default.update({ rating: data.rating, price: data.price }, {
+            where: { id: bookId }
+        });
+        const favourites = yield Book_1.default.findAll({
+            limit: 20,
+            where: { userId },
+            order: [['updatedAt', 'DESC']]
+        });
+        return favourites;
+    }
+    catch (error) {
+        throw error;
+    }
+});
+const deleteFavourite = (userId, bookId) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield Book_1.default.destroy({
+            where: { id: bookId }
+        });
+        const favourites = yield Book_1.default.findAll({
+            limit: 20,
+            where: { userId },
+            order: [['updatedAt', 'DESC']]
+        });
+        return favourites;
+    }
+    catch (error) {
+        throw error;
+    }
+});
 exports.default = {
     fetchBooksFromNytApi,
     fetchFavouritesByUserId,
