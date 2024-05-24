@@ -5,8 +5,9 @@ export type Book = {
 }
 
 export type Favourite = Book & {
-  id: string
+  id?: string
   rating: number
-  createdAt: Date
-  updatedAt: Date
+  userId: string
+  createdAt?: Date
+  updatedAt?: Date
 }

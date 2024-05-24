@@ -1,35 +1,24 @@
 import express from 'express'
 
-import bookService from '../services/bookService'
+import {
+  addFavourite,
+  deleteFavourite,
+  getBestSellers,
+  getFavourites,
+  updateFavourite
+} from '../controllers/bookController'
+import { authorizeRequest } from '../middleware/auth'
 
 const router = express.Router()
 
-router.get('/best-sellers/all', async (req, res) => {
-  const options: { [key: string]: string | number } = {}
+router.get('/best-sellers/all', authorizeRequest, getBestSellers)
 
-  if (req.query.offset) options.offset = Number(req.query.offset)
+router.get('/:userId', authorizeRequest, getFavourites)
 
-  if (req.query.query) options.query = String(req.query.query)
+router.post('/:userId', authorizeRequest, addFavourite)
 
-  const books = await bookService.fetchBooksFromNytApi(options)
+router.put('/:userId/:bookId', authorizeRequest, updateFavourite)
 
-  res.json(books)
-})
-
-router.get('/:userId', (_req, res) => {
-  res.send('Fetch all favourites by user ID')
-})
-
-router.post('/:userId', (_req, res) => {
-  res.send('Add a new favourite')
-})
-
-router.put('/:bookId', (_req, res) => {
-  res.send('Update a favourite')
-})
-
-router.delete('/:bookId', (_req, res) => {
-  res.send('Delete a favourite')
-})
+router.delete('/:userId/:bookId', authorizeRequest, deleteFavourite)
 
 export default router

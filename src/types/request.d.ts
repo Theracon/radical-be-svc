@@ -1,7 +1,9 @@
+import { Request } from 'express'
+import { JwtPayload } from 'jsonwebtoken'
+
 import { AuthRequest } from './auth'
 import { Book } from './book'
 
-export type UserRequest = {
-  data?: AuthRequest | Book | string
-  token?: string
+export interface UserRequest extends Request {
+  token?: JwtPayload | string
 }
